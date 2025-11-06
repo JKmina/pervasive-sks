@@ -44,6 +44,35 @@ body {
   min-height: 100vh;
 }
 
+/*login*/
+.loginbox {
+  padding: 50px 100px;
+}
+
+.loginbox label {
+  display : block;
+  text-align : left;
+}
+
+.loginbox input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+.loginbox button { 
+  width: 100%;
+  background-color: #f2a65a;
+  border: none;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 3px;
+}
+
+.login-box button:hover {
+  background-color: #e5923f;
+}
+
 /* Full-width flexible container */
 .home-container {
   background-color: #ffe6b3;

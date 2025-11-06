@@ -1,6 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Home({ user }) {
+export default function Home({ user, setUser }){
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+  if (window.confirm("Are you sure you want to log out?")) {
+    setUser(null);
+    navigate("/Login");
+  }
+};
   return (
     <div className="home-container">
       <h2 className="welcome-text">Welcome, {user.username}!</h2>
@@ -42,8 +50,8 @@ export default function Home({ user }) {
         <button className="btn btn-secondary connect-btn">
           Connect to hardware
         </button>
-        <button className="btn btn-danger logout-btn">Logout</button>
+        <button className="btn btn-danger logout-btn" onClick={handleLogout}>Logout</button>
       </div>
     </div>
-  );
+  ); 
 }

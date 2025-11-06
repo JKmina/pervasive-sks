@@ -13,16 +13,18 @@ import Inventory from "./components/Inventory";
 export default function App() {
   const [user, setUser] = useState(null);
 
-  if (!user) return <Login setUser={setUser} />;
-
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home user={user} />} />
-        <Route path="/orders" element={<Orders user={user} />} />
-        <Route path="/inventory" element={<Inventory user={user} />} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      {!user ? (
+        <Login setUser={setUser} />
+      ) : (
+        <Routes>
+          <Route path="/" element={<Home user={user} setUser={setUser} />} />
+          <Route path="/orders" element={<Orders user={user} />} />
+          <Route path="/inventory" element={<Inventory user={user} />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      )}
     </Router>
   );
 }
