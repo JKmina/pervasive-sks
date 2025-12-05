@@ -1,56 +1,43 @@
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Home({ user, setUser }){
-  const navigate = useNavigate();
 
-  const handleLogout = () => {
-  if (window.confirm("Are you sure you want to log out?")) {
-    setUser(null);
-    navigate("/Login");
-  }
-};
   return (
     <div className="home-container">
-      <h2 className="welcome-text">Welcome, {user.username}!</h2>
-      <p className="role-text">
-        Role: <strong>{user.role}</strong>
-      </p>
-
       <div className="dashboard">
-        {/* Inventory Section */}
-        <div className="card inventory-card">
-          <div className="card-header inventory-header">
-            <Link to="/inventory" className="tab-link">
-              Inventory
-            </Link>
-          </div>
-          <div className="card-body">
-            <div className="placeholder-table">
-              <p>Inventory table preview will appear here.</p>
+        <section className="hero-section">
+          <div className= "hero-left">
+            <h1>Welcome to Inventory & Packing System</h1>
+            <p>Manage your inventory and orders efficiently.</p>
+
+            <div className="hero-buttons">
+              <button className="btns">Connect to hardware</button>
+              <button className="btns">Start Scanning!</button>
             </div>
           </div>
-        </div>
-
-        {/* Orders Section */}
-        <div className="card orders-card">
-          <div className="card-header orders-header">
-            <Link to="/orders" className="tab-link">
-              Orders
-            </Link>
+          <div className= "hero-right">
+            <img src="https://www.pngmart.com/files/10/Inventory-Management-Software-PNG-Clipart.png" alt="Inventory Management Software" />
           </div>
-          <div className="card-body">
-            <div className="placeholder-table">
-              <p>Orders table preview will appear here.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+        </section>
 
-      <div className="bottom-buttons">
-        <button className="btn btn-secondary connect-btn">
-          Connect to hardware
-        </button>
-        <button className="btn btn-danger logout-btn" onClick={handleLogout}>Logout</button>
+        <section className="card-section">
+          <div className="card">
+            <p className="card-title">Current stock : </p>
+            <h2>Total products</h2>
+          </div>
+
+          <div className="card">
+            <p className="card-title">Orders processed : </p>
+            <h2>Orders processed</h2>
+          </div>
+
+          <div className="card">
+            <p className="card-title">Hardware status</p>
+            <h2>Connected?</h2>
+          </div>
+          
+        </section>
+        
       </div>
     </div>
   ); 
