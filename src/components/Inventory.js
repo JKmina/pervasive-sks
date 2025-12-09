@@ -11,7 +11,6 @@ export default function Inventory({ user }) {
   });
   const [editingProduct, setEditingProduct] = useState(null);
 
-
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -30,6 +29,7 @@ export default function Inventory({ user }) {
       fetchProducts();
     }
   }
+
   async function deleteProduct(id) {
     if (!window.confirm("Delete this product?")) return;
 
@@ -37,8 +37,6 @@ export default function Inventory({ user }) {
     if (error) alert(error.message);
     fetchProducts();
   }
-
-  
 
   return (
     <div className="page-container">
@@ -53,6 +51,8 @@ export default function Inventory({ user }) {
                 <th>Category</th>
                 <th>Stock</th>
                 <th>Price (Rp)</th>
+                <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>

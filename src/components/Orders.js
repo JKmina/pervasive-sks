@@ -124,6 +124,8 @@ export default function Orders({ user }) {
                 <th>Products</th>
                 <th>Quantity</th>
                 <th>Total Price</th>
+                <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -163,13 +165,15 @@ export default function Orders({ user }) {
                       <td className="text-center">{productQtys || "-"}</td>
                       <td className="text-center">Rp. {orderTotal || 0}</td>
                       <td className="text-center">
-                      <button onclick={()=> setEditingOrder(order)}>
-                        Edit
-                      </button>
-                      <button onclick={()=> deleteOrder(orders.id)}>
-                        Delete
-                      </button>
-                    </td>
+                        <button onclick={()=> setEditingOrder(order)}>
+                          Edit
+                        </button>
+                      </td>
+                      <td className="text-center">
+                        <button onclick={()=> deleteOrder(orders.id)}>
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   );
                 })
