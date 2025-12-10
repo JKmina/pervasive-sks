@@ -39,44 +39,185 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #ffe4b5;
+  background-color: #fff8eb;
   margin: 0;
   min-height: 100vh;
+}
+
+/*login*/
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  top: 60px;
+}
+
+.loginTitle {
+  text-align: center;
+  font-size: large;
+  padding-top: 40px;
+  position: relative;
+  top: 110px;
+}
+
+.loginbox {
+  display : flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px 100px;
+  background-color: #f1d29c;
+  margin-top: 50px;
+  width : 250px;
+  height : 200px;
+}
+
+.loginbox label {
+  display : block;
+  text-align : left;
+  font-size : 12px;
+}
+
+.loginbox input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+.loginbox button { 
+  width: 100%;
+  background-color: #f2a65a;
+  border: none;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 3px;
+}
+
+.login-box button:hover {
+  background-color: #e5923f;
 }
 
 /* Full-width flexible container */
 .home-container {
   background-color: #ffe6b3;
   border-radius: 16px;
-  width: 90%;
+  width: 100%;
   height: auto;
-  max-width: 900px; /* expanded max width for large screens */
+  max-width: 1200px; /* expanded max width for large screens */
   margin: 40px auto;
   padding: 40px 30px;
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
+.navbar-container {
+  background-color: #ffe6b3;
+  display: flex;
+  border-radius: 16px;
+  width: 100%;
+  height: 100px;
+  max-width: 1200px;
+  gap: 50px;
+
+  margin: 0 auto;
+}
+
+.home-navbar {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  align-items: center;
+  padding: 0 30px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+
+.welcome-text{
+  font-size: 16px;
+}
+
+.nav-links{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-links a {
+  text-decoration: none;
+  display: flex;
+  gap: 15px;
+  font-size: 16px;
+  color: #333;
+}
+
+.nav-links a:hover {
+  color: #444;
+}
+
+
+
 /* Dashboard grid - adaptive layout */
 .dashboard {
   display: flex;
   flex-wrap: wrap; /* allows wrapping on smaller screens */
-  justify-content: center;
   gap: 30px;
   margin-top: 30px;
 }
 
+.hero-section {
+  background: #6ba2e0;
+  width: 100%;
+  margin: 10px;
+  padding: 60px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hero-left h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.hero-left p {
+  font-size: 16px;
+  margin-bottom: 100px;
+  text-align: left;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.card-section{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 25px;
+}
 /* --- Cards --- */
 .card {
-  background-color: #fffdf4;
-  border-radius: 16px;
-  flex: 1 1 400px; /* grow + shrink with minimum 400px width */
-  max-width: 480px; /* limit each card width */
-  display: flex;
-  flex-direction: column;
+  background-color: #f4f9ff;
+  padding: 15px 35px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  min-width: 270px;          
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
   border: 2px solid #dcb67a;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-title{
+  text-align: left;
+  font-size: 18px;
 }
 
 .card:hover {
@@ -92,12 +233,21 @@ body {
   font-size: 16px;
 }
 
-.inventory-header {
-  background-color: #aef7a6;
+.hero-section, .card-section{
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.orders-header {
-  background-color: #b9d4ff;
+.page-container {
+  background-color: #ffe6b3;
+  display: flex;
+  border-radius: 16px;
+  width: 100%;
+  height: auto;
+  max-width: 1200px;
+  gap: 50px;
+  margin: 40px auto;
+  padding: 40px 30px;
 }
 
 .card-body {
@@ -114,39 +264,20 @@ body {
   text-align: center;
 }
 
-/* Placeholder preview */
-.placeholder-table {
-  border: 2px dashed #dcb67a;
-  border-radius: 10px;
-  padding: 30px 10px;
-  color: #6a6a6a;
-  font-style: italic;
-  width: 100%;
-  text-align: center;
-}
-
-/* --- Buttons at bottom --- */
-.bottom-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  margin-top: 35px;
-}
-
-.connect-btn,
-.logout-btn {
+.btns {
   flex: 1 1 180px;
-  max-width: 200px;
-  border-radius: 20px;
+  max-width: 100px;
+  height: 50px;
+  border-radius: 100px;
   font-weight: bold;
   border: none;
   background-color: white;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.connect-btn:hover,
-.logout-btn:hover {
+.btns:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
   background-color: #fafafa;
   transform: translateY(-2px);
 }

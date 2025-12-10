@@ -9,6 +9,12 @@ export default function Orders({ user }) {
     prod_id: "",
     qty: "",
   });
+  const [editingOrder, setEditingOrder] = useState(null);
+  const [editData, setEditData] = useState({
+    cust_name: "",
+    status: "",
+  });
+
 
   useEffect(() => {
     fetchOrders();
@@ -88,9 +94,94 @@ export default function Orders({ user }) {
     fetchProducts();
   }
 
+  async function deleteOrder(id) {
+    if (!window.confirm("Delete this order?")) return;
+
+    const { error: detailErr } = await supabase
+      .from("orderdetails")
+      .delete()
+      .eq("ord_id", id);
+
+    if (detailErr) return alert(detailErr.message);
+
+    const { error } = await supabase.from("orders").delete().eq("id", id);
+    if (error) alert(error.message);
+
+    fetchOrders();
+  }
+
   return (
-    <div className="container mt-4">
-      <h3 className="text-center mb-4">Orders</h3>
+    <div className="page-container">
+      <div className="page-left">
+        <h3 className="text-center mb-4">Orders</h3>
+        <div className="table-responsive shadow-sm">
+          <table className="table table-bordered table-hover align-middle">
+            <thead className="table-primary text-center">
+              <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Products</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center text-muted">
+                    No orders available.
+                  </td>
+                </tr>
+              ) : (
+                orders.map((order, index) => {
+                  const orderTotal = order.orderdetails?.reduce(
+                    (sum, item) => sum + item.total_price,
+                    0
+                  );
+
+                  // Combine product names and qtys cleanly (no bullet list)
+                  const productNames = order.orderdetails
+                    ?.map((d) => {
+                      const product = products.find((p) => p.id === d.prod_id);
+                      return product ? product.name : "Unknown";
+                    })
+                    .join(", ");
+
+                  const productQtys = order.orderdetails
+                    ?.map((d) => d.qty)
+                    .join(", ");
+
+                  return (
+                    <tr key={order.id}>
+                      <td className="text-center">{index + 1}</td>
+                      <td>{order.cust_name}</td>
+                      <td className="text-capitalize text-center">
+                        {order.status}
+                      </td>
+                      <td>{productNames || <em>No items</em>}</td>
+                      <td className="text-center">{productQtys || "-"}</td>
+                      <td className="text-center">Rp. {orderTotal || 0}</td>
+                      <td className="text-center">
+                        <button onclick={()=> setEditingOrder(order)}>
+                          Edit
+                        </button>
+                      </td>
+                      <td className="text-center">
+                        <button onclick={()=> deleteOrder(orders.id)}>
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {user.role === "admin" && (
         <div className="border p-3 rounded mb-3">
@@ -136,61 +227,7 @@ export default function Orders({ user }) {
         </div>
       )}
 
-      <div className="table-responsive shadow-sm">
-        <table className="table table-bordered table-hover align-middle">
-          <thead className="table-primary text-center">
-            <tr>
-              <th>#</th>
-              <th>Customer</th>
-              <th>Status</th>
-              <th>Products</th>
-              <th>Quantity</th>
-              <th>Total Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.length === 0 ? (
-              <tr>
-                <td colSpan="6" className="text-center text-muted">
-                  No orders available.
-                </td>
-              </tr>
-            ) : (
-              orders.map((order, index) => {
-                const orderTotal = order.orderdetails?.reduce(
-                  (sum, item) => sum + item.total_price,
-                  0
-                );
-
-                // Combine product names and qtys cleanly (no bullet list)
-                const productNames = order.orderdetails
-                  ?.map((d) => {
-                    const product = products.find((p) => p.id === d.prod_id);
-                    return product ? product.name : "Unknown";
-                  })
-                  .join(", ");
-
-                const productQtys = order.orderdetails
-                  ?.map((d) => d.qty)
-                  .join(", ");
-
-                return (
-                  <tr key={order.id}>
-                    <td className="text-center">{index + 1}</td>
-                    <td>{order.cust_name}</td>
-                    <td className="text-capitalize text-center">
-                      {order.status}
-                    </td>
-                    <td>{productNames || <em>No items</em>}</td>
-                    <td className="text-center">{productQtys || "-"}</td>
-                    <td className="text-center">Rp. {orderTotal || 0}</td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
+      
     </div>
   );
 }
