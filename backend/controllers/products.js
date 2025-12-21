@@ -1,31 +1,83 @@
 const Product = require("../models/productmodel");
 
-// GET all products
+/** =========================
+ * GET ALL PRODUCTS
+ ========================== */
 exports.getProducts = async (req, res) => {
-  const data = await Product.getAllProducts();
-  res.json(data);
+  try {
+    const data = await Product.getAllProducts();
+    res.status(200).json(data);
+  } catch (err) {
+    console.error("GET PRODUCTS ERROR:", err);
+    res.status(500).json({ error: "Failed to fetch products" });
+  }
 };
 
-// GET product by id
+/** =========================
+ * GET PRODUCT BY ID
+ ========================== */
 exports.getProduct = async (req, res) => {
-  const data = await Product.getProductById(req.params.id);
-  res.json(data);
+  try {
+    const data = await Product.getProductById(req.params.id);
+    if (!data) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+    res.status(200).json(data);
+  } catch (err) {
+    console.error("GET PRODUCT ERROR:", err);
+    res.status(500).json({ error: "Failed to fetch product" });
+  }
 };
 
-// CREATE product
+/** =========================
+ * CREATE PRODUCT
+ ========================== */
 exports.createProduct = async (req, res) => {
-  const data = await Product.createProduct(req.body);
-  res.json({ message: "Product created", data });
+  try {
+    const data = await Product.createProduct(req.body);
+    res.status(201).json({
+      message: "Product created successfully",
+      data,
+    });
+  } catch (err) {
+    console.error("CREATE PRODUCT ERROR:", err);
+    res.status(400).json({
+      error: err.message || "Failed to create product",
+    });
+  }
 };
 
-// UPDATE product
+/** =========================
+ * UPDATE PRODUCT
+ ========================== */
 exports.updateProduct = async (req, res) => {
-  const data = await Product.updateProduct(req.params.id, req.body);
-  res.json({ message: "Product updated", data });
+  try {
+    const data = await Product.updateProduct(req.params.id, req.body);
+    res.status(200).json({
+      message: "Product updated successfully",
+      data,
+    });
+  } catch (err) {
+    console.error("UPDATE PRODUCT ERROR:", err);
+    res.status(400).json({
+      error: err.message || "Failed to update product",
+    });
+  }
 };
 
-// DELETE product
+/** =========================
+ * DELETE PRODUCT
+ ========================== */
 exports.deleteProduct = async (req, res) => {
-  const data = await Product.deleteProduct(req.params.id);
-  res.json({ message: "Product deleted", data });
+  try {
+    await Product.deleteProduct(req.params.id);
+    res.status(200).json({
+      message: "Product deleted successfully",
+    });
+  } catch (err) {
+    console.error("DELETE PRODUCT ERROR:", err);
+    res.status(500).json({
+      error: err.message || "Failed to delete product",
+    });
+  }
 };

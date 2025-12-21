@@ -15,7 +15,7 @@ exports.createTag = async (req, res) => {
   res.json({ message: "RFID Tag created", data });
 };
 
-/* exports.deleteTag = async (req, res) => {
+exports.deleteTag = async (req, res) => {
   const data = await RFIDTag.delete(req.params.id);
   res.json({ message: "RFID Tag deleted", data });
-}; */
+};

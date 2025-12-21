@@ -1,10 +1,18 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 app.use(express.json());
 
+app.use(
+  cors({
+    origin: "http://localhost:5001",
+    credentials: true,
+  })
+);
+
 // ROUTES
 app.use("/api/products", require("./routes/productroutes"));
-app.use("/api/orders", require("./routes/orderroutes.js"));
+app.use("/api/orders", require("./routes/orderroutes"));
 app.use("/api/tags", require("./routes/rfidroutes"));
 app.use("/api/auth", require("./routes/authroutes"));
 

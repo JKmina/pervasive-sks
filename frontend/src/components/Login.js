@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { supabase } from "../supabaseclient";
+import { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
 
@@ -14,53 +14,58 @@ export default function Login({ setUser }) {
     e.preventDefault();
     setErrorMsg("");
 
-    const { data, error } = await supabase
-      .from("user")
-      .select("*")
-      .eq("username", username)
-      .eq("hash_passwd", password)
-      .single();
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        username,
+        password,
+      });
 
-    if (error || !data) {
-      setErrorMsg("Invalid username or password");
-    } else {
-      setUser(data);
-      localStorage.setItem("loggedUser", JSON.stringify(data));
+      const { token, user } = res.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("loggedUser", JSON.stringify(user));
+
+      setUser(user);
       navigate("/");
+    } catch (err) {
+      setErrorMsg(
+        err.response?.data?.message || "Invalid username or password"
+      );
     }
   };
 
-  // If user already logged in, redirect
-  useEffect(() => {
-    const savedUser = localStorage.getItem("loggedUser");
-    if (savedUser){}
-  }, []);
-
   return (
     <div className="container mt-5 col-md-4">
-      <h2 className="loginTitle">Welcome to Inventory & Packing System.</h2>
+      <h2 className="loginTitle">Welcome to Inventory & Packing System</h2>
 
       <div className="login">
         <div className="loginbox">
           <form onSubmit={handleLogin}>
-            <label>Username</label>
+            <label htmlFor="username">Username</label>
             <input
+              id="username"
+              name="username"
               type="text"
               className="form-control mb-2"
               placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              required
             />
-            <label>Password</label>
+
+            <label htmlFor="password">Password</label>
             <input
+              id="password"
+              name="password"
               type="password"
               className="form-control mb-3"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
 
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary w-100">
               Login
             </button>
           </form>

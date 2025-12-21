@@ -6,7 +6,6 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { supabase } from "./supabaseclient";
 import Layout from "./components/Layout";
 import Login from "./components/Login";
 import Home from "./components/Home";
@@ -20,32 +19,34 @@ function ProtectedRoute({ user, children }) {
 
 export default function App() {
   const [user, setUser] = useState(null);
+  const [loadingSession, setLoadingSession] = useState(true);
 
-  // Restore session on refresh
   useEffect(() => {
-    const loadSession = async () => {
+    try {
       const savedUser = localStorage.getItem("loggedUser");
-      if (savedUser) {
+      if (savedUser && savedUser !== "undefined") {
         setUser(JSON.parse(savedUser));
       }
-    };
-
-    loadSession();
+    } catch {
+      localStorage.removeItem("loggedUser");
+      localStorage.removeItem("token");
+    } finally {
+      setLoadingSession(false);
+    }
   }, []);
+
+  if (loadingSession) return <p>Loading...</p>;
 
   return (
     <Router>
       <Routes>
-        
-        {/* LOGIN (no layout) */}
+        {/* PUBLIC */}
         <Route path="/login" element={<Login setUser={setUser} />} />
 
-        {/* AUTHENTICATED PAGES */}
-        <Route
-          element={<Layout user={user} setUser={setUser} />}
-        >
+        {/* PROTECTED */}
+        <Route path="/" element={<Layout user={user} setUser={setUser} />}>
           <Route
-            path="/"
+            index
             element={
               <ProtectedRoute user={user}>
                 <Home user={user} />
@@ -54,16 +55,16 @@ export default function App() {
           />
 
           <Route
-            path="/inventory"
+            path="inventory"
             element={
               <ProtectedRoute user={user}>
-                <Inventory user={user} />
+                <Inventory />
               </ProtectedRoute>
             }
           />
 
           <Route
-            path="/orders"
+            path="orders"
             element={
               <ProtectedRoute user={user}>
                 <Orders user={user} />
@@ -71,7 +72,6 @@ export default function App() {
             }
           />
         </Route>
-
       </Routes>
     </Router>
   );

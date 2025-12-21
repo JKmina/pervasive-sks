@@ -1,87 +1,98 @@
 const OrderModel = require("../models/ordermodel");
-const OrderDetailModel = require("../models/orderdetailmodel");
 
-exports.getOrders = async (req, res) => {
-  try {
-    const data = await OrderModel.getAllOrders();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+class OrderController {
+  /** =========================
+   * GET ALL ORDERS
+   ========================== */
+  static async getOrders(req, res) {
+    try {
+      const orders = await OrderModel.getAllOrders();
+      res.status(200).json(orders);
+    } catch (err) {
+      console.error("GET ORDERS ERROR:", err);
+      res.status(500).json({ message: "Failed to fetch orders" });
+    }
   }
-};
 
-exports.getOrder = async (req, res) => {
-  try {
-    const id = req.params.id;
+  /** =========================
+   * GET ORDER BY ID
+   ========================== */
+  static async getOrder(req, res) {
+    try {
+      const { id } = req.params;
+      const order = await OrderModel.getOrderById(id);
 
-    const order = await OrderModel.getOrderById(id);
-    const details = await OrderDetailModel.getDetailsByOrderId(id);
+      if (!order) {
+        return res.status(404).json({ message: "Order not found" });
+      }
 
-    res.json({
-      ...order,
-      items: details,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+      res.status(200).json(order);
+    } catch (err) {
+      console.error("GET ORDER ERROR:", err);
+      res.status(500).json({ message: "Failed to fetch order" });
+    }
   }
-};
 
-exports.createOrder = async (req, res) => {
-  try {
-    const { order, items } = req.body;
-    const newOrder = await OrderModel.createOrder(order);
+  /** =========================
+   * CREATE ORDER
+   ========================== */
+  static async createOrder(req, res) {
+    try {
+      const { order, items } = req.body;
 
-    const orderDetailsData = items.map((item) => ({
-      ord_id: newOrder.id,
-      prod_id: item.prod_id,
-      qty: item.qty,
-      total_price: item.total_price,
-    }));
+      if (!order || !items || items.length === 0) {
+        return res
+          .status(400)
+          .json({ message: "Order and items are required" });
+      }
 
-    await OrderDetailModel.addMultiple(orderDetailsData);
+      const result = await OrderModel.createOrder({ order, items });
 
-    res.json({ message: "Order created successfully", orderId: newOrder.id });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+      res.status(201).json(result);
+    } catch (err) {
+      console.error("CREATE ORDER ERROR:", err);
+      res.status(500).json({ message: "Failed to create order" });
+    }
   }
-};
 
-exports.updateOrder = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const { order, items } = req.body;
+  /** =========================
+   * UPDATE ORDER
+   ========================== */
+  static async updateOrder(req, res) {
+    try {
+      const { id } = req.params;
+      const { order, items } = req.body;
 
-    // 1️⃣ Update order
-    await OrderModel.updateOrder(id, order);
+      if (!order || !items) {
+        return res
+          .status(400)
+          .json({ message: "Order and items are required" });
+      }
 
-    // 2️⃣ Delete old details
-    await OrderDetailModel.deleteDetailsByOrderId(id);
+      await OrderModel.updateOrder(id, { order, items });
 
-    // 3️⃣ Insert new details
-    const orderDetailsData = items.map((item) => ({
-      ord_id: id,
-      prod_id: item.prod_id,
-      qty: item.qty,
-      total_price: item.total_price,
-    }));
-
-    await OrderDetailModel.addMultiple(orderDetailsData);
-
-    res.json({ message: "Order updated successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+      res.status(200).json({ message: "Order updated successfully" });
+    } catch (err) {
+      console.error("UPDATE ORDER ERROR:", err);
+      res.status(500).json({ message: "Failed to update order" });
+    }
   }
-};
 
-exports.deleteOrder = async (req, res) => {
-  try {
-    const id = req.params.id;
+  /** =========================
+   * DELETE ORDER
+   ========================== */
+  static async deleteOrder(req, res) {
+    try {
+      const { id } = req.params;
 
-    await OrderDetailModel.deleteDetailsByOrderId(id);
-    await OrderModel.deleteOrder(id);
+      await OrderModel.deleteOrder(id);
 
-    res.json({ message: "Order deleted" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+      res.status(200).json({ message: "Order deleted successfully" });
+    } catch (err) {
+      console.error("DELETE ORDER ERROR:", err);
+      res.status(500).json({ message: "Failed to delete order" });
+    }
   }
-};
+}
+
+module.exports = OrderController;

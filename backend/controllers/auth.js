@@ -2,41 +2,86 @@ const User = require("../models/usermodel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-// Login
+// =====================
+// LOGIN
+// =====================
 exports.login = async (req, res) => {
-  const { username, password } = req.body;
-  const user = await User.getUserByUsername(username);
+  try {
+    const { username, password } = req.body;
 
-  if (!user) return res.status(404).json({ message: "User not found" });
+    // 1️⃣ Validate input
+    if (!username || !password) {
+      return res
+        .status(400)
+        .json({ message: "Username and password required" });
+    }
 
-  const check = await bcrypt.compare(password, user.hash_passwd);
-  if (!check) return res.status(401).json({ message: "Invalid password" });
+    // 2️⃣ Find user
+    const user = await User.getUserByUsername(username);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-  const token = jwt.sign(
-    {
-      id: user.id,
-      role: user.role,
-      username: user.username,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
-  );
+    // 3️⃣ Compare password
+    const valid = await bcrypt.compare(password, user.hash_passwd);
+    if (!valid) {
+      return res.status(401).json({ message: "Invalid password" });
+    }
 
-  res.json({ message: "Login success", token });
+    // 4️⃣ Sign JWT
+    const token = jwt.sign(
+      {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    // 5️⃣ Send token
+    res.json({
+      message: "Login success",
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-// Register account
+// =====================
+// REGISTER
+// =====================
 exports.register = async (req, res) => {
-  const { username, password, role } = req.body;
+  try {
+    const { username, password, role } = req.body;
 
-  const hash = await bcrypt.hash(password, 10);
+    // 1️⃣ Validate input
+    if (!username || !password) {
+      return res.status(400).json({ message: "Missing fields" });
+    }
 
-  const newUserData = {
-    username,
-    hash_passwd: hash,
-    role,
-  };
+    // 2️⃣ Hash password
+    const hash = await bcrypt.hash(password, 10);
 
-  const newUser = await User.createUser(newUserData);
-  res.json({ message: "User registered", newUser });
+    // 3️⃣ Create user
+    const newUser = await User.createUser({
+      username,
+      hash_passwd: hash,
+      role: role || "user",
+    });
+
+    res.status(201).json({
+      message: "User registered",
+      id: newUser.id,
+      username: newUser.username,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
