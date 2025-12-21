@@ -92,99 +92,126 @@ export default function Orders({ user }) {
   ========================== */
   return (
     <div className="page-container">
-      <h3>Orders</h3>
+      {/* =========================
+          LEFT SIDE – ORDERS TABLE
+      ========================== */}
+      <div className="page-left">
+        <h3 className="fw-bold mb-3">Orders</h3>
 
-      <table border="1" cellPadding="8" width="100%">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Customer</th>
-            <th>Status</th>
-            <th>Products</th>
-            <th>Qty</th>
-            <th>Total</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.length === 0 ? (
-            <tr>
-              <td colSpan="7" align="center">
-                No orders
-              </td>
-            </tr>
-          ) : (
-            orders.map((order, index) => {
-              const total = order.orderdetails?.reduce(
-                (sum, d) => sum + d.total_price,
-                0
-              );
+        <div className="table-responsive">
+          <table className="table table-striped table-bordered align-middle">
+            <thead className="table-warning">
+              <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Products</th>
+                <th>Qty</th>
+                <th>Total</th>
+                <th>Action</th>
+              </tr>
+            </thead>
 
-              const productNames = order.orderdetails
-                ?.map((d) => d.product?.name)
-                .join(", ");
-
-              const qtys = order.orderdetails?.map((d) => d.qty).join(", ");
-
-              return (
-                <tr key={order.id}>
-                  <td>{index + 1}</td>
-                  <td>{order.cust_name}</td>
-                  <td>{order.status}</td>
-                  <td>{productNames}</td>
-                  <td>{qtys}</td>
-                  <td>Rp {total}</td>
-                  <td>
-                    <button onClick={() => handleDeleteOrder(order.id)}>
-                      Delete
-                    </button>
+            <tbody>
+              {orders.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="text-center text-muted">
+                    No orders
                   </td>
                 </tr>
-              );
-            })
-          )}
-        </tbody>
-      </table>
+              ) : (
+                orders.map((order, index) => {
+                  const total = order.orderdetails?.reduce(
+                    (sum, d) => sum + d.total_price,
+                    0
+                  );
+
+                  const productNames = order.orderdetails
+                    ?.map((d) => d.product?.name)
+                    .join(", ");
+
+                  const qtys = order.orderdetails
+                    ?.map((d) => d.qty)
+                    .join(", ");
+
+                  return (
+                    <tr key={order.id}>
+                      <td>{index + 1}</td>
+                      <td>{order.cust_name}</td>
+                      <td>{order.status}</td>
+                      <td>{productNames}</td>
+                      <td>{qtys}</td>
+                      <td>Rp {total}</td>
+                      <td className="text-center">
+                        <button
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDeleteOrder(order.id)}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       {/* =========================
-          CREATE ORDER FORM
+          RIGHT SIDE – CREATE ORDER
       ========================== */}
-      {user.role === "admin" && (
-        <div style={{ marginTop: 20 }}>
-          <h4>Create Order</h4>
+      <div className="page-right">
+        {user.role === "admin" && (
+          <div className="mb-4">
+            <h6 className="fw-semibold mb-3">Create Order</h6>
 
-          <input
-            placeholder="Customer Name"
-            value={newOrder.cust_name}
-            onChange={(e) =>
-              setNewOrder({ ...newOrder, cust_name: e.target.value })
-            }
-          />
+            <div className="d-flex flex-column align-items-center gap-2 w-100">
+              <input
+                className="form-control w-50"
+                placeholder="Customer Name"
+                value={newOrder.cust_name}
+                onChange={(e) =>
+                  setNewOrder({ ...newOrder, cust_name: e.target.value })
+                }
+              />
 
-          <select
-            value={newOrder.prod_id}
-            onChange={(e) =>
-              setNewOrder({ ...newOrder, prod_id: e.target.value })
-            }
-          >
-            <option value="">Select Product</option>
-            {products.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name} (Stock: {p.stock})
-              </option>
-            ))}
-          </select>
+              <select
+                className="form-control w-50"
+                value={newOrder.prod_id}
+                onChange={(e) =>
+                  setNewOrder({ ...newOrder, prod_id: e.target.value })
+                }
+              >
+                <option value="">Select Product</option>
+                {products.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} (Stock: {p.stock})
+                  </option>
+                ))}
+              </select>
 
-          <input
-            type="number"
-            placeholder="Qty"
-            value={newOrder.qty}
-            onChange={(e) => setNewOrder({ ...newOrder, qty: e.target.value })}
-          />
+              <input
+                type="number"
+                className="form-control w-50"
+                placeholder="Qty"
+                value={newOrder.qty}
+                onChange={(e) =>
+                  setNewOrder({ ...newOrder, qty: e.target.value })
+                }
+              />
 
-          <button onClick={handleCreateOrder}>Add Order</button>
-        </div>
-      )}
+              <button
+                className="btn btn-success px-4 mt-2"
+                onClick={handleCreateOrder}
+              >
+                Add Order
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

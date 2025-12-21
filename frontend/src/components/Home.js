@@ -1,3 +1,5 @@
+import packLogo from "../packlogo.png"
+
 export default function Home() {
   return (
     <div className="home-container">
@@ -16,8 +18,9 @@ export default function Home() {
 
           <div className="hero-right">
             <img
-              src="https://www.pngmart.com/files/10/Inventory-Management-Software-PNG-Clipart.png"
+              src={packLogo}
               alt="Inventory Management"
+              className="hero-image"
             />
           </div>
         </section>
