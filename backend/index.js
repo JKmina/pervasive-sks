@@ -5,7 +5,10 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:5001",
+    origin: [
+      "http://localhost:5001",
+      "https://pervasive-sks-production.up.railway.app",
+    ],
     credentials: true,
   })
 );
