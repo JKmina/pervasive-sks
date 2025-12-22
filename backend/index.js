@@ -15,7 +15,7 @@ app.use(cors({
 }));
 
 // This ensures preflight requests are handled
-app.options("*", cors());
+app.options(/.*/, cors()); 
 
 app.use("/api/auth", require("./routes/authroutes"));
 
