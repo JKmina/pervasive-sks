@@ -41,7 +41,7 @@ class ProductModel {
     console.log("Data:", cleanData);
 
     const { data, error } = await supabase
-      .from("products") // <--- CEK INI: 'product' atau 'products'? Sesuaikan dg Supabase!
+      .from("product")
       .update(cleanData)
       .eq("id", id)
       .select()
