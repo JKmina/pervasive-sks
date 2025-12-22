@@ -1,25 +1,24 @@
-const express = require("express");
 const cors = require("cors");
+const express = require("express");
 const app = express();
+
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5001",
-      "https://pervasive-sks-production.up.railway.app",
-      "https://pervasive-sksdeploy.vercel.app",
-    ],
-    credentials: true,
-  })
-);
+// Proper CORS setup
+app.use(cors({
+  origin: [
+    "http://localhost:5001",
+    "https://pervasive-sks-production.up.railway.app",
+    "https://pervasive-sksdeploy.vercel.app"
+  ],
+  credentials: true
+}));
 
-// ROUTES
-app.use("/api/products", require("./routes/productroutes"));
-app.use("/api/orders", require("./routes/orderroutes"));
-app.use("/api/tags", require("./routes/rfidroutes"));
+// This ensures preflight requests are handled
+app.options("*", cors());
+
 app.use("/api/auth", require("./routes/authroutes"));
 
-console.log("Auth route mounted at /api/auth");
-
-module.exports = app;
+app.listen(process.env.PORT || 5000, () => {
+  console.log("Server running...");
+});
