@@ -28,13 +28,29 @@ class ProductModel {
   }
 
   static async updateProduct(id, payload) {
+    // 1. Kita 'bersihkan' data biar sesuai kolom database
+    const cleanData = {
+      name: payload.name,
+      category: payload.category,
+      stock: payload.stock,
+      price: payload.price,
+    };
+
+    // 2. Debugging: Cek apa yang dikirim di terminal backend
+    console.log("Update ID:", id);
+    console.log("Data:", cleanData);
+
     const { data, error } = await supabase
-      .from("product")
-      .update(payload)
+      .from("products") // <--- CEK INI: 'product' atau 'products'? Sesuaikan dg Supabase!
+      .update(cleanData)
       .eq("id", id)
       .select()
       .single();
-    if (error) throw error;
+
+    if (error) {
+      console.log("Error Supabase:", error.message); // Biar ketahuan errornya apa
+      throw error;
+    }
     return data;
   }
 
