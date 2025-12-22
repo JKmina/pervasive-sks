@@ -8,6 +8,7 @@ app.use(
     origin: [
       "http://localhost:5001",
       "https://pervasive-sks-production.up.railway.app",
+      "https://pervasive-sksdeploy.vercel.app",
     ],
     credentials: true,
   })
